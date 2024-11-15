@@ -12,24 +12,19 @@ jobs:
       TF_VAR_google_project: ${{ secrets.GCP_PROJECT_ID }}
       TF_VAR_google_region: ${{ secrets.GCP_REGION }}
       TF_VAR_gcs_bucket_name: ${{ secrets.GCS_BUCKET_NAME }}
-      TF_VAR_google_credentials_file: "$HOME/gcp-key.json"
+      TF_VAR_credentials_file_path: "$HOME/gcp-key.json"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_wrapper: false
-
-      - name: Authenticate with GCP
+      - name: Save Google credentials to file
         run: |
           echo "$GOOGLE_CREDENTIALS" > "$HOME/gcp-key.json"
-          export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcp-key.json"
-          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
-          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-          gcloud services enable cloudresourcemanager.googleapis.com
+          chmod 600 "$HOME/gcp-key.json"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
 
       - name: Initialize Terraform with backend config
         run: |
