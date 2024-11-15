@@ -1,7 +1,11 @@
 name: Deploy to Google Cloud
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
+  
 
 jobs:
   terraform:
