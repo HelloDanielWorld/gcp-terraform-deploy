@@ -10,6 +10,11 @@ variable "google_region" {
   description = "Google Cloud Region"
 }
 
+variable "credentials_file_path" {
+  description = "Path to the Google Cloud credentials JSON file"
+  sensitive   = true
+}
+
 terraform {
   backend "gcs" {}
 }
