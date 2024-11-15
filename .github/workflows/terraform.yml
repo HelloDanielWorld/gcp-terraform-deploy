@@ -11,7 +11,6 @@ jobs:
       GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       TF_VAR_google_project: ${{ secrets.GCP_PROJECT_ID }}
       TF_VAR_google_region: ${{ secrets.GCP_REGION }}
-      TF_VAR_gcs_bucket_name: ${{ secrets.GCS_BUCKET_NAME }}
 
     steps:
       - name: Checkout code
@@ -28,8 +27,11 @@ jobs:
           gcloud auth activate-service-account --key-file="$HOME/gcp-key.json"
           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Initialize Terraform
-        run: terraform init -input=false
+      - name: Initialize Terraform with backend config
+        run: terraform init \
+          -backend-config="bucket=${{ secrets.GCS_BUCKET_NAME }}" \
+          -backend-config="prefix=terraform/state" \
+          -backend-config="credentials=$HOME/gcp-key.json"
 
       - name: Validate Terraform
         run: terraform validate
