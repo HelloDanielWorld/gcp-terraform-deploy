@@ -21,14 +21,13 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
-
+      
       - name: Authenticate with GCP
         run: |
           echo "$GOOGLE_CREDENTIALS" > "$HOME/gcp-key.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcp-key.json"
           gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-          gcloud services enable cloudresourcemanager.googleapis.com
 
       - name: Initialize Terraform with backend config
         run: |
