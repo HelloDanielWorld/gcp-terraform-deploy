@@ -10,25 +10,22 @@ variable "google_region" {
   description = "Google Cloud Region"
 }
 
-variable "google_credentials" {
-  description = "Google Cloud credentials JSON"
-  sensitive   = true
-}
-
-
+# No need for google_credentials as a variable anymore
 terraform {
   backend "gcs" {}
 }
+
 provider "google" {
   project     = var.google_project
   region      = var.google_region
-  credentials = var.google_credentials
+  credentials = file("${env.GOOGLE_APPLICATION_CREDENTIALS}")
 }
+
 resource "google_cloud_run_v2_service" "test-service" {
-  name               = "test-workflow-service-unseald"
-  location           = var.google_region
+  name                = "test-workflow-service-unseald"
+  location            = var.google_region
   deletion_protection = false
-  ingress            = "INGRESS_TRAFFIC_ALL"
+  ingress             = "INGRESS_TRAFFIC_ALL"
 
   template {
     containers {
@@ -42,8 +39,8 @@ resource "google_cloud_run_v2_service" "test-service" {
 }
 
 resource "google_cloud_run_service_iam_member" "allow_unauthenticated" {
-  service   = google_cloud_run_v2_service.test-service.name
-  location  = google_cloud_run_v2_service.test-service.location
-  role      = "roles/run.invoker"
-  member    = "allUsers"
+  service  = google_cloud_run_v2_service.test-service.name
+  location = google_cloud_run_v2_service.test-service.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }
