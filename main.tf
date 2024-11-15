@@ -10,8 +10,9 @@ variable "google_region" {
   description = "Google Cloud Region"
 }
 
-variable "credentials_file_path" {
-  description = "Path to the Google Cloud credentials JSON file"
+variable "google_credentials_file" {
+  description = "Path to Google Cloud credentials file"
+  default     = "/tmp/gcp-key.json" # Path to where the file will be created
   sensitive   = true
 }
 
@@ -22,7 +23,7 @@ terraform {
 provider "google" {
   project     = var.google_project
   region      = var.google_region
-  credentials = file("${var.credentials_file_path}")
+  credentials = file(var.google_credentials_file)
 }
 
 resource "google_cloud_run_v2_service" "test-service" {
