@@ -15,6 +15,7 @@ jobs:
       GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       TF_VAR_google_project: ${{ secrets.GCP_PROJECT_ID }}
       TF_VAR_google_region: ${{ secrets.GCP_REGION }}
+      TF_VAR_gcs_bucket_name: ${{ secrets.GCS_BUCKET_NAME }}
 
     steps:
       - name: Checkout code
