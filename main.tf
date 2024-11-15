@@ -17,10 +17,7 @@ variable "google_credentials" {
 
 
 terraform {
-  backend "gcs" {
-    bucket = var.gcs_bucket_name
-    prefix = "terraform/state"
-  }
+  backend "gcs" {}
 }
 provider "google" {
   project     = var.google_project
