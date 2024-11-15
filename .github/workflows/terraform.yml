@@ -25,7 +25,8 @@ jobs:
       - name: Authenticate with GCP
         run: |
           echo "$GOOGLE_CREDENTIALS" > "$HOME/gcp-key.json"
-          gcloud auth activate-service-account --key-file="$HOME/gcp-key.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcp-key.json"
+          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
           gcloud services enable cloudresourcemanager.googleapis.com
 
@@ -42,11 +43,7 @@ jobs:
       - name: Plan Terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: "$HOME/gcp-key.json"
-        run: terraform plan -out=tfplan \
-          -var="google_project=${{ secrets.GCP_PROJECT_ID }}" \
-          -var="google_region=${{ secrets.GCP_REGION }}" \
-          -var="gcs_bucket_name=${{ secrets.GCS_BUCKET_NAME }}" \
-          -var="google_credentials=$GOOGLE_CREDENTIALS"
+        run: terraform plan -out=tfplan
 
       - name: Apply Terraform
         env:
