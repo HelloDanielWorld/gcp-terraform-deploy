@@ -40,11 +40,15 @@ jobs:
         run: terraform validate
 
       - name: Plan Terraform
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "$HOME/gcp-key.json"
         run: terraform plan -out=tfplan \
           -var="google_project=${{ secrets.GCP_PROJECT_ID }}" \
           -var="google_region=${{ secrets.GCP_REGION }}" \
           -var="gcs_bucket_name=${{ secrets.GCS_BUCKET_NAME }}" \
-          -var="google_credentials=${{ secrets.GCP_CREDENTIALS }}"
+          -var="google_credentials=$GOOGLE_CREDENTIALS"
 
       - name: Apply Terraform
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "$HOME/gcp-key.json"
         run: terraform apply -input=false -auto-approve tfplan
