@@ -10,7 +10,11 @@ variable "google_region" {
   description = "Google Cloud Region"
 }
 
-# No need for google_credentials as a variable anymore
+variable "google_credentials_file" {
+  description = "Path to the Google Cloud credentials JSON file"
+  sensitive   = true
+}
+
 terraform {
   backend "gcs" {}
 }
@@ -18,7 +22,7 @@ terraform {
 provider "google" {
   project     = var.google_project
   region      = var.google_region
-  credentials = file("${env.GOOGLE_APPLICATION_CREDENTIALS}")
+  credentials = file(var.google_credentials_file)
 }
 
 resource "google_cloud_run_v2_service" "test-service" {
